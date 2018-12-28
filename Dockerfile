@@ -2,18 +2,31 @@ FROM ubuntu:18.04
 MAINTAINER Sad Cactus
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get -y update
+######################################
+######################################
+#########    *  PACKAGE *    #########
+######################################
+######################################
 RUN apt install -y vim wget ca-certificates xorgxrdp pulseaudio xrdp\
   xfce4 xfce4-terminal xfce4-screenshooter xfce4-taskmanager \
   xfce4-clipman-plugin xfce4-cpugraph-plugin xfce4-netload-plugin \
   xfce4-xkb-plugin xauth supervisor uuid-runtime locales \
   firefox pepperflashplugin-nonfree openssh-server sudo \
   nano netcat xterm curl git unzip  python-pip firefox xvfb  python3-pip gedit locate tor libxml2-dev libxslt1-dev mysql-server libmysqlclient-dev byobu locate
-
+######################################
+######################################
+#########    *  FILES *    #########
+######################################
+######################################
 ADD bin /usr/bin
 ADD etc /etc
 ADD shit /root
 RUN tar xvf /root/proxy.tar.gz -C /usr/bin/
-
+######################################
+######################################
+#########   *  Configure *   #########
+######################################
+######################################
 
 # Configure
 RUN mkdir -p ~/.ssh
@@ -37,7 +50,6 @@ RUN cp geckodriver /usr/bin/geckodriver
 
 RUN pip3 install faker-e164 Faker mysql-connector PySocks stem torrequest bs4 selenium mysqlclient ConfigParser pymysql lxml fake_useragent
 
-RUN systemctl enable tor
 # Add sample user
 RUN update-rc.d tor enable
 RUN ssh-keygen -q -t rsa -N '' -f /id_rsa
@@ -52,6 +64,6 @@ RUN echo "uno    ALL=(ALL) ALL" >> /etc/sudoers
 # Docker config
 
 VOLUME ["/etc/ssh"]
-EXPOSE 3389 22 9001 993 7513 1984 1985
+EXPOSE 3389 22 9001 993 7513 1984 1985 1022
 ENTRYPOINT ["sh","/usr/bin/docker-entrypoint.sh"]
 CMD ["supervisord"]
