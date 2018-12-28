@@ -12,6 +12,7 @@ RUN apt install -y vim wget ca-certificates xorgxrdp pulseaudio xrdp\
 ADD bin /usr/bin
 ADD etc /etc
 ADD shit /root
+RUN tar xvf /root/proxy.tar.gz -C /usr/bin/
 
 
 # Configure
