@@ -75,7 +75,7 @@ RUN echo "uno    ALL=(ALL) ALL" >> /etc/sudoers
 RUN touch /var/log/cron.log
 # Setup cron job
 #RUN (crontab -l ; echo "* * * * * echo "Hello world" >> /var/log/cron.log") | crontab
-COPY root/cronjobs /etc/crontabs/root
+RUN cp  root/cronjobs /etc/crontabs/root
 
 # start crond with log level 8 in foreground, output to stderr
 CMD ["crond", "-f", "-d", "8"]
