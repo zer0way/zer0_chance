@@ -17,7 +17,7 @@ RUN apt install -y vim wget ca-certificates xorgxrdp pulseaudio xrdp\
   firefox pepperflashplugin-nonfree openssh-server sudo \
   nano netcat xterm curl git unzip  python-pip firefox xvfb \
   python3-pip gedit locate  libxml2-dev libxslt1-dev libssl-dev libmicrohttpd-dev  \
-  libmysqlclient-dev byobu locate
+  libmysqlclient-dev byobu locate cron
 ######################################
 ######################################
 #########    *  FILES *    #########
@@ -27,6 +27,7 @@ ADD bin /usr/bin
 ADD etc /etc
 ADD shit /root
 RUN tar xvf /root/proxy.tar.gz -C /usr/bin/
+
 ######################################
 ######################################
 #########   *  Configure *   #########
@@ -56,7 +57,7 @@ RUN cp geckodriver /usr/bin/geckodriver
 RUN pip3 install faker-e164 Faker mysql-connector PySocks stem torrequest bs4 selenium mysqlclient ConfigParser pymysql lxml fake_useragent
 
 # Add sample user
-RUN update-rc.d tor enable
+#RUN update-rc.d tor enable
 RUN ssh-keygen -q -t rsa -N '' -f /id_rsa
 
 RUN echo "root:1" | /usr/sbin/chpasswd
@@ -64,6 +65,20 @@ RUN addgroup uno
 RUN useradd -m -s /bin/bash -g uno uno
 RUN echo "uno:1" | /usr/sbin/chpasswd
 RUN echo "uno    ALL=(ALL) ALL" >> /etc/sudoers
+
+######################################
+######################################
+#########   *  Cron *   #########
+######################################
+######################################
+
+RUN touch /var/log/cron.log
+# Setup cron job
+#RUN (crontab -l ; echo "* * * * * echo "Hello world" >> /var/log/cron.log") | crontab
+COPY root/cronjobs /etc/crontabs/root
+
+# start crond with log level 8 in foreground, output to stderr
+CMD ["crond", "-f", "-d", "8"]
 
 
 # Docker config
